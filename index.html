@@ -1,18 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Kamera</title>
+  <title>Kamera Online</title>
+  <style>
+    body { font-family: Arial; text-align: center; margin-top: 30px; }
+    video, img { width: 90%; max-width: 400px; margin-top: 20px; }
+    button { padding: 10px 20px; font-size: 16px; margin-top: 20px; }
+  </style>
 </head>
 <body>
-  <h1>Hap Kamera</h1>
-  <video id="video" autoplay playsinline width="100%"></video>
+  <h1>Hap Kamera & Bëj Foto</h1>
+  <video id="video" autoplay playsinline></video>
+  <br>
   <button onclick="takePhoto()">Bëj Foto</button>
+  <div id="output"></div>
+
   <script>
     const video = document.getElementById('video');
+
     navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => video.srcObject = stream)
-      .catch(err => alert('Gabim: ' + err));
-      
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        alert('Nuk mund të hapet kamera: ' + err);
+      });
+
     function takePhoto() {
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth;
@@ -20,14 +33,12 @@
       canvas.getContext('2d').drawImage(video, 0, 0);
       const imageUrl = canvas.toDataURL('image/png');
 
-      // Shfaq foton direkt poshtë
-      let img = document.getElementById('photo');
-      if (!img) {
-        img = document.createElement('img');
-        img.id = 'photo';
-        document.body.appendChild(img);
-      }
+      const img = document.createElement('img');
       img.src = imageUrl;
+
+      const output = document.getElementById('output');
+      output.innerHTML = '';
+      output.appendChild(img);
     }
   </script>
 </body>
